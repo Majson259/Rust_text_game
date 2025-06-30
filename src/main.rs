@@ -8,7 +8,7 @@ fn main() {
 
     let mut room = 0;
 
-    let mut smer = "nahoru";
+    let mut smer = "doprava";
 
     let mut mapa: Vec<Vec<i32>> = Vec::new();
     mapa.push(vec![0]);
@@ -21,39 +21,8 @@ fn main() {
 
     loop {
         let cislo = rng.random_range(0..dej.len());
-        println!("{}", dej[cislo]);
-        if cislo == 3 {
-            let smer = txt_vstup("Kudy se vydáš?");
-            let smer = zpracuj_vstup(&smer);
-
-            if smer == "rovně" {
-            println!("Vykročil jsi vpřed.");
-            } else if smer == "vlevo" {
-            println!("Otočil jsi se v levo a pokračuješ v cestě.");
-            } else if smer == "vpravo" {
-                println!("vyšel jsi vpravo.");
-            } else if smer == "konec" {
-                return;
-            } else {
-                println!("Promiň, nerozuměl jsem");
-            }
-
-        } else {
-            let smer = txt_vstup("Na jakou stranu se vydáš?");
-            let smer = zpracuj_vstup(&smer);
-
-            if smer == "rovně" {
-            println!("Vpřed nemůžeš!");
-            } else if smer == "vlevo" {
-            println!("Otočil jsi se v levo a pokračuješ v cestě.");
-            } else if smer == "vpravo" {
-                println!("vyšel jsi vpravo.");
-            } else if smer == "konec" {
-                return;
-            } else {
-                println!("Promiň, nerozuměl jsem");
-            }
-        }
+        
+        chodba(&dej, x, y, smer, &mut mapa, room);
     }
 
 }
@@ -73,18 +42,17 @@ fn zpracuj_vstup(text: &str) -> String {
 }
 
 // Místnosti
-fn chodba(list: &[i32], mut x: i32, mut y: i32, smer: &str, mapa: &mut Vec<Vec<i32>>, mut room: i32) {
+fn chodba(list: &[&str], mut x: i32, mut y: i32, smer: &str, mapa: &mut Vec<Vec<i32>>, mut room: i32) {
     println!("{}",list[0]);
     loop {
-        let odpoved = txt_vstup("Půjdeš rovně, nebo zpět?");
+        let odpoved = txt_vstup("Půjdeš rovně, nebo zpět?").trim().to_string();
         if odpoved == "rovně" {
             println!("Jdeš rovně.");
             if smer == "nahoru" {
                 if y == 0 {
-                    let vektor = vec![0; x as usize];
+                    let vektor = vec![0; (x + 1) as usize];
                     mapa.insert(0, vektor);
                     mapa[y as usize][x as usize] = 1;
-                    room = 1;
                     return;
                 } else if y > 0 {
                     y -= 1;
@@ -95,10 +63,39 @@ fn chodba(list: &[i32], mut x: i32, mut y: i32, smer: &str, mapa: &mut Vec<Vec<i
                 if y == mapa.len() as i32 {
                     let vektor = vec![0; x as usize];
                     mapa.insert(y as usize, vektor);
+                    return;
                 }
-            } else {
-                return;
+            } else if smer == "doleva" {
+                if x == 0 {
+                    for vektor in &mut *mapa {
+                        vektor.insert(0, 0);
+                    }
+                    mapa[y as usize][x as usize] = 1;
+                    return;
+                } else if x > 0 {
+                    if mapa[y as usize][(x - 1) as usize] != 0 {
+                        x -= 1;
+                        room = mapa[y as usize][x as usize];
+                        return;
+                    }
+                }
+            } else if smer == "doprava" {
+                if x == mapa[0].len() as i32 {
+                    for vektor in &mut *mapa {
+                        vektor.push(0);
+                    }
+                    x += 1;
+                    mapa[y as usize][x as usize] = 1;
+                    return;
+                } else if x != mapa[0].len() as i32 - 1 {
+                    if mapa[y as usize][(x + 1) as usize] != 2 {
+                    x += 1;
+                    }
+                    room = mapa[y as usize][x as usize];
+                    return;
+                }
             }
+
         } else if odpoved == "zpět" {
             println!("Otočil ses a jdeš zpátky");
             return;
