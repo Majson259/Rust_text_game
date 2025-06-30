@@ -8,7 +8,7 @@ fn main() {
 
     let mut room = 0;
 
-    let mut smer = "doprava";
+    let mut smer = &mut String::from("nahoru");
 
     let mut mapa: Vec<Vec<i32>> = Vec::new();
     mapa.push(vec![0]);
@@ -21,6 +21,7 @@ fn main() {
 
     loop {
         let cislo = rng.random_range(0..dej.len());
+        println!("{}", smer);
         
         chodba(&dej, x, y, smer, &mut mapa, room);
     }
@@ -42,7 +43,7 @@ fn zpracuj_vstup(text: &str) -> String {
 }
 
 // Místnosti
-fn chodba(list: &[&str], mut x: i32, mut y: i32, smer: &str, mapa: &mut Vec<Vec<i32>>, mut room: i32) {
+fn chodba(list: &[&str], mut x: i32, mut y: i32,smer: &mut String, mapa: &mut Vec<Vec<i32>>, mut room: i32) {
     println!("{}",list[0]);
     loop {
         let odpoved = txt_vstup("Půjdeš rovně, nebo zpět?").trim().to_string();
@@ -60,7 +61,7 @@ fn chodba(list: &[&str], mut x: i32, mut y: i32, smer: &str, mapa: &mut Vec<Vec<
                     return;
                 }
             } else if smer == "dolů" {
-                if y == mapa.len() as i32 {
+                if y == mapa.len() as i32 - 1 {
                     let vektor = vec![0; x as usize];
                     mapa.insert(y as usize, vektor);
                     return;
@@ -80,7 +81,7 @@ fn chodba(list: &[&str], mut x: i32, mut y: i32, smer: &str, mapa: &mut Vec<Vec<
                     }
                 }
             } else if smer == "doprava" {
-                if x == mapa[0].len() as i32 {
+                if x == mapa[0].len() as i32 - 1 {
                     for vektor in &mut *mapa {
                         vektor.push(0);
                     }
@@ -98,11 +99,25 @@ fn chodba(list: &[&str], mut x: i32, mut y: i32, smer: &str, mapa: &mut Vec<Vec<
 
         } else if odpoved == "zpět" {
             println!("Otočil ses a jdeš zpátky");
+            opacny_smer(smer);
             return;
         } else {
             println!("Promiň, nerozuměl jsem")
         }
     }
+}
+
+fn opacny_smer(smer: &mut String) -> String {
+    if smer == "nahoru" {
+                *smer = "dolů".to_string();
+            } else if smer == "dolů" {
+                *smer = "nahoru".to_string();
+            } else if smer == "doleva" {
+                *smer = "doprava".to_string();
+            } else if smer == "doprava" {
+                *smer = "doleva".to_string();
+            }
+            return smer.to_string();
 }
 
 fn krizovatka(list: &[i32], x: i32, y: i32) {
