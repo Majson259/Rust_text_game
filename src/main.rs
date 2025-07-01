@@ -59,144 +59,17 @@ fn chodba(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, map
         let odpoved = txt_vstup("Půjdeš rovně, nebo zpět?").trim().to_string();
         if odpoved == "rovně" {
             println!("Jdeš rovně.");
-            if smer == "nahoru" {
-                if *y == 0 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    mapa.insert(0, vektor);
-                    mapa[*y as usize][*x as usize] = 1;
-                    return;
-                } else if *y > 0 {
-                    *y -= 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 1;
-                        return;
-                    }
-                }
-            } else if smer == "dolů" {
-                if *y == mapa.len() as i32 - 1 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    *y += 1;
-                    mapa.insert(*y as usize, vektor);
-                    mapa[*y as usize][*x as usize] = 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 1;
-                        return;
-                    }
-                    return;
-                } else if *y != mapa.len() as i32 - 1 {
-                    if mapa[(*y + 1) as usize][*x as usize] != 0 {
-                        *y += 1;
-                        room = mapa[*y as usize][*x as usize];
-                        return;
-                    } else if mapa[(*y + 1) as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 1;
-                        return;
-                    }
-                }
-            } else if smer == "doleva" {
-                if *x == 0 {
-                    for vektor in &mut *mapa {
-                        vektor.insert(0, 0);
-                    }
-                    mapa[*y as usize][*x as usize] = 1;
-                    return;
-                } else if *x > 0 {
-                    if mapa[*y as usize][(*x - 1) as usize] != 0 {
-                        *x -= 1;
-                        room = mapa[*y as usize][*x as usize];
-                        return;
-                    } if mapa[*y as usize][(*x - 1) as usize] == 0 {
-                    *x -= 1;
-                    mapa[*y as usize][*x as usize] = 1;
-                    return;
-                    }
-                }
-            } else if smer == "doprava" {
-                if *x == mapa[0].len() as i32 - 1 {
-                    for vektor in &mut *mapa {
-                        vektor.push(0);
-                    }
-                    *x += 1;
-                    mapa[*y as usize][*x as usize] = 1;
-                    return;
-                } else if *x != mapa[0].len() as i32 - 1 {
-                    if mapa[*y as usize][(*x + 1) as usize] != 2 {
-                        *x += 1;
-                    } if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 1;
-                    }
-                    room = mapa[*y as usize][*x as usize];
-                    return;
-                }
-            }
+
+            prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 1);
+            return;
 
         } else if odpoved == "zpět" {
             println!("Otočil ses a jdeš zpátky");
-            if smer == "nahoru" {
-                if *y == 0 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    mapa.insert(0, vektor);
-                    mapa[*y as usize][*x as usize] = 1;
-                } else if *y > 0 {
-                    *y -= 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 1;
-                    }
-                }
-            } else if smer == "dolů" {
-                if *y == mapa.len() as i32 - 1 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    *y += 1;
-                    mapa.insert(*y as usize, vektor);
-                    mapa[*y as usize][*x as usize] = 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 1;
-                    }
-                } else if *y != mapa.len() as i32 - 1 {
-                    if mapa[(*y + 1) as usize][*x as usize] != 0 {
-                        *y += 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } else if mapa[(*y + 1) as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 1;
-                    }
-                }
-            } else if smer == "doleva" {
-                if *x == 0 {
-                    for vektor in &mut *mapa {
-                        vektor.insert(0, 0);
-                    }
-                    mapa[*y as usize][*x as usize] = 1;
-                } else if *x > 0 {
-                    if mapa[*y as usize][(*x - 1) as usize] != 0 {
-                        *x -= 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } if mapa[*y as usize][(*x - 1) as usize] == 0 {
-                    *x -= 1;
-                    mapa[*y as usize][*x as usize] = 1;
-                    }
-                }
-            } else if smer == "doprava" {
-                if *x == mapa[0].len() as i32 - 1 {
-                    for vektor in &mut *mapa {
-                        vektor.push(0);
-                    }
-                    *x += 1;
-                    mapa[*y as usize][*x as usize] = 1;
-                } else if *x != mapa[0].len() as i32 - 1 {
-                    if mapa[*y as usize][(*x + 1) as usize] != 2 {
-                        *x += 1;
-                    } if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 1;
-                    }
-                    room = mapa[*y as usize][*x as usize];
-                }
-            }
+            
+            prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 1);
             opacny_smer(smer);
             return;
+
         } else {
             println!("Promiň, nerozuměl jsem")
         }
@@ -230,273 +103,31 @@ fn krizovatka(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String,
         let mut odpoved = txt_vstup("Kterým směrem půjdeš?").trim().to_string();
         if odpoved == "rovně" {
             println!("Jdeš rovně.");
-            if smer == "nahoru" {
-                if *y == 0 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    mapa.insert(0, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                    return;
-                } else if *y > 0 {
-                    *y -= 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                        return;
-                    }
-                }
-            } else if smer == "dolů" {
-                if *y == mapa.len() as i32 - 1 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    *y += 1;
-                    mapa.insert(*y as usize, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                        return;
-                    }
-                    return;
-                } else if *y != mapa.len() as i32 - 1 {
-                    if mapa[(*y + 1) as usize][*x as usize] != 0 {
-                        *y += 1;
-                        room = mapa[*y as usize][*x as usize];
-                        return;
-                    } else if mapa[(*y + 1) as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                        return;
-                    }
-                }
-            } else if smer == "doleva" {
-                if *x == 0 {
-                    for vektor in &mut *mapa {
-                        vektor.insert(0, 0);
-                    }
-                    mapa[*y as usize][*x as usize] = 4;
-                    return;
-                } else if *x > 0 {
-                    if mapa[*y as usize][(*x - 1) as usize] != 0 {
-                        *x -= 1;
-                        room = mapa[*y as usize][*x as usize];
-                        return;
-                    } if mapa[*y as usize][(*x - 1) as usize] == 0 {
-                    *x -= 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                    return;
-                    }
-                }
-            } else if smer == "doprava" {
-                if *x == mapa[0].len() as i32 - 1 {
-                    for vektor in &mut *mapa {
-                        vektor.push(0);
-                    }
-                    *x += 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                    return;
-                } else if *x != mapa[0].len() as i32 - 1 {
-                    if mapa[*y as usize][(*x + 1) as usize] != 2 {
-                        *x += 1;
-                    } if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                    room = mapa[*y as usize][*x as usize];
-                    return;
-                }
-            }
+            
+            prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 4);
+            return;
+
         } else if odpoved == "zpět" {
             println!("Otočil ses a jdeš zpátky");
-            if smer == "nahoru" {
-                if *y == 0 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    mapa.insert(0, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *y > 0 {
-                    *y -= 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "dolů" {
-                if *y == mapa.len() as i32 - 1 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    *y += 1;
-                    mapa.insert(*y as usize, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                } else if *y != mapa.len() as i32 - 1 {
-                    if mapa[(*y + 1) as usize][*x as usize] != 0 {
-                        *y += 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } else if mapa[(*y + 1) as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "doleva" {
-                if *x == 0 {
-                    for vektor in &mut *mapa {
-                        vektor.insert(0, 0);
-                    }
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *x > 0 {
-                    if mapa[*y as usize][(*x - 1) as usize] != 0 {
-                        *x -= 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } if mapa[*y as usize][(*x - 1) as usize] == 0 {
-                    *x -= 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "doprava" {
-                if *x == mapa[0].len() as i32 - 1 {
-                    for vektor in &mut *mapa {
-                        vektor.push(0);
-                    }
-                    *x += 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *x != mapa[0].len() as i32 - 1 {
-                    if mapa[*y as usize][(*x + 1) as usize] != 2 {
-                        *x += 1;
-                    } if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                    room = mapa[*y as usize][*x as usize];
-                }
-            }
+
+            prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 4);
             opacny_smer(smer);
             return;
+
         } else if odpoved == "vpravo" {
             println!("Vykročil jsi vpravo");
-            if smer == "nahoru" {
-                if *y == 0 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    mapa.insert(0, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *y > 0 {
-                    *y -= 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "dolů" {
-                if *y == mapa.len() as i32 - 1 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    *y += 1;
-                    mapa.insert(*y as usize, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                } else if *y != mapa.len() as i32 - 1 {
-                    if mapa[(*y + 1) as usize][*x as usize] != 0 {
-                        *y += 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } else if mapa[(*y + 1) as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "doleva" {
-                if *x == 0 {
-                    for vektor in &mut *mapa {
-                        vektor.insert(0, 0);
-                    }
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *x > 0 {
-                    if mapa[*y as usize][(*x - 1) as usize] != 0 {
-                        *x -= 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } if mapa[*y as usize][(*x - 1) as usize] == 0 {
-                    *x -= 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "doprava" {
-                if *x == mapa[0].len() as i32 - 1 {
-                    for vektor in &mut *mapa {
-                        vektor.push(0);
-                    }
-                    *x += 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *x != mapa[0].len() as i32 - 1 {
-                    if mapa[*y as usize][(*x + 1) as usize] != 2 {
-                        *x += 1;
-                    } if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                    room = mapa[*y as usize][*x as usize];
-                }
-            }
+
+            prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 4);
             zatacka(smer, &mut odpoved);
             return;
+
         } else if odpoved == "vlevo" {
             println!("Vykročil jsi vlevo");
-            if smer == "nahoru" {
-                if *y == 0 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    mapa.insert(0, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *y > 0 {
-                    *y -= 1;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "dolů" {
-                if *y == mapa.len() as i32 - 1 {
-                    let vektor = vec![0; (mapa[0].len()) as usize];
-                    *y += 1;
-                    mapa.insert(*y as usize, vektor);
-                    mapa[*y as usize][*x as usize] = 4;
-                    if mapa[*y as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                } else if *y != mapa.len() as i32 - 1 {
-                    if mapa[(*y + 1) as usize][*x as usize] != 0 {
-                        *y += 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } else if mapa[(*y + 1) as usize][*x as usize] == 0 {
-                        *y += 1;
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "doleva" {
-                if *x == 0 {
-                    for vektor in &mut *mapa {
-                        vektor.insert(0, 0);
-                    }
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *x > 0 {
-                    if mapa[*y as usize][(*x - 1) as usize] != 0 {
-                        *x -= 1;
-                        room = mapa[*y as usize][*x as usize];
-                    } if mapa[*y as usize][(*x - 1) as usize] == 0 {
-                    *x -= 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                    }
-                }
-            } else if smer == "doprava" {
-                if *x == mapa[0].len() as i32 - 1 {
-                    for vektor in &mut *mapa {
-                        vektor.push(0);
-                    }
-                    *x += 1;
-                    mapa[*y as usize][*x as usize] = 4;
-                } else if *x != mapa[0].len() as i32 - 1 {
-                    if mapa[*y as usize][(*x + 1) as usize] != 2 {
-                        *x += 1;
-                    } if mapa[*y as usize][*x as usize] == 0 {
-                        mapa[*y as usize][*x as usize] = 4;
-                    }
-                    room = mapa[*y as usize][*x as usize];
-                }
-            }
+
+            prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 4);
             zatacka(smer, &mut odpoved);
             return;
+
         }
          else {
             println!("Promiň, nerozuměl jsem")
@@ -546,4 +177,68 @@ fn zatacka(smer: &mut String, odpoved: &mut String) {
             *smer = "doprava".to_string();
         }
     }
+}
+
+fn prace_s_vektorem(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, mapa: &mut Vec<Vec<i32>>, mut room: i32, cislo_ve_vektoru: i32) {
+    if smer == "nahoru" {
+        if *y == 0 {
+            let vektor = vec![0; (mapa[0].len()) as usize];
+            mapa.insert(0, vektor);
+            mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+        } else if *y > 0 {
+            *y -= 1;
+            if mapa[*y as usize][*x as usize] == 0 {
+                mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+            }
+        }
+    } else if smer == "dolů" {
+        if *y == mapa.len() as i32 - 1 {
+            let vektor = vec![0; (mapa[0].len()) as usize];
+            *y += 1;
+            mapa.insert(*y as usize, vektor);
+            mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+            if mapa[*y as usize][*x as usize] == 0 {
+                *y += 1;
+                mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+            }
+        } else if *y != mapa.len() as i32 - 1 {
+            if mapa[(*y + 1) as usize][*x as usize] != 0 {
+                *y += 1;
+                room = mapa[*y as usize][*x as usize];
+            } else if mapa[(*y + 1) as usize][*x as usize] == 0 {
+                *y += 1;
+                mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+            }
+        }
+    } else if smer == "doleva" {
+        if *x == 0 {
+            for vektor in &mut *mapa {
+                vektor.insert(0, 0);
+            }
+            mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+        } else if *x > 0 {
+            if mapa[*y as usize][(*x - 1) as usize] != 0 {
+                *x -= 1;
+                room = mapa[*y as usize][*x as usize];
+            } if mapa[*y as usize][(*x - 1) as usize] == 0 {
+            *x -= 1;
+            mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+            }
+        }
+    } else if smer == "doprava" {
+        if *x == mapa[0].len() as i32 - 1 {
+            for vektor in &mut *mapa {
+                vektor.push(0);
+            }
+            *x += 1;
+            mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+        } else if *x != mapa[0].len() as i32 - 1 {
+            if mapa[*y as usize][(*x + 1) as usize] != 2 {
+                *x += 1;
+            } if mapa[*y as usize][*x as usize] == 0 {
+                mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+            }
+            room = mapa[*y as usize][*x as usize];
+        }
+    }  
 }
