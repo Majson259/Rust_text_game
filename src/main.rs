@@ -15,7 +15,7 @@ fn main() {
 
     let mut rng = rand::rng();
 
-    let dej = ["Jsi v chodbě.", "Před tebou něco je, ", "Před tebou je nepřítel.", "Jsi na křižovatce."];
+    let dej = ["Jsi v chodbě.", "Před tebou je zeď. ", "Před tebou je nepřítel.", "Jsi na křižovatce."];
 
     println!("Vítej dobrodruhu!");
 
@@ -26,6 +26,8 @@ fn main() {
         chodba(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
 
         krizovatka(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
+
+        zed(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
     }
 
 }
@@ -135,6 +137,40 @@ fn krizovatka(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String,
     }
 }
 
+fn zed(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, mapa: &mut Vec<Vec<i32>>, mut room: i32) {
+    println!("{}",list[1]);
+    loop {
+        for i in &mut *mapa {
+            println!(" ");
+            for j in i {
+                print!("{}", j);
+            }
+        }
+        println!("x: {}", x);
+        println!("y: {}", y);
+        let odpoved = txt_vstup("Půjdeš zpět?").trim().to_string();
+        if odpoved == "zpět" {
+            println!("Jdeš zpět.");
+
+            prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 2);
+            opacny_smer(smer);
+            if smer == "nahoru" {
+                *y -= 1;
+            } else if smer == "dolů" {
+                *y += 1;
+            } else if smer == "doprava" {
+                *x += 1;
+            } else if smer == "doleva" {
+                *x -= 1;
+            }
+            return;
+
+        } else {
+            println!("Promiň, nerozuměl jsem.");
+        }
+    }
+}
+
 fn zatacka(smer: &mut String, odpoved: &mut String) {
     if *smer == "nahoru" {
         if *odpoved == "vpravo" {
@@ -220,7 +256,7 @@ fn prace_s_vektorem(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut S
             if mapa[*y as usize][(*x - 1) as usize] != 0 {
                 *x -= 1;
                 room = mapa[*y as usize][*x as usize];
-            } if mapa[*y as usize][(*x - 1) as usize] == 0 {
+            } else if mapa[*y as usize][(*x - 1) as usize] == 0 {
             *x -= 1;
             mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
             }
@@ -233,12 +269,12 @@ fn prace_s_vektorem(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut S
             *x += 1;
             mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
         } else if *x != mapa[0].len() as i32 - 1 {
-            if mapa[*y as usize][(*x + 1) as usize] != 2 {
                 *x += 1;
-            } if mapa[*y as usize][*x as usize] == 0 {
+            if mapa[*y as usize][*x as usize] == 0 {
                 mapa[*y as usize][*x as usize] = cislo_ve_vektoru;
+            } else {
+                room = mapa[*y as usize][*x as usize];
             }
-            room = mapa[*y as usize][*x as usize];
         }
     }  
 }
