@@ -20,14 +20,18 @@ fn main() {
     println!("Vítej dobrodruhu!");
 
     loop {
-        let cislo = rng.random_range(0..dej.len() as i32);
+        let mut cislo = rng.random_range(0..dej.len() as i32);
         println!("{}", smer);
+
+        vyber_mistnosti(&mut mapa, &mut smer, &mut cislo, y, x);
         
-        chodba(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
-
-        krizovatka(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
-
-        zed(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
+        if cislo == 0 {
+            chodba(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
+        } else if cislo == 3 {
+            krizovatka(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
+        } else if cislo == 1 {
+            zed(&dej, &mut x, &mut y, &mut smer, &mut mapa, room);
+        }
     }
 
 }
@@ -53,9 +57,10 @@ fn chodba(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, map
         for i in &mut *mapa {
             println!(" ");
             for j in i {
-                print!("{}", j);
+                print!("{} ", j);
             }
         }
+        println!(" ");
         println!("x: {}", x);
         println!("y: {}", y);
         let odpoved = txt_vstup("Půjdeš rovně, nebo zpět?").trim().to_string();
@@ -80,15 +85,15 @@ fn chodba(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, map
 
 fn opacny_smer(smer: &mut String) -> String {
     if smer == "nahoru" {
-                *smer = "dolů".to_string();
-            } else if smer == "dolů" {
-                *smer = "nahoru".to_string();
-            } else if smer == "doleva" {
-                *smer = "doprava".to_string();
-            } else if smer == "doprava" {
-                *smer = "doleva".to_string();
-            }
-            return smer.to_string();
+        *smer = "dolů".to_string();
+    } else if smer == "dolů" {
+        *smer = "nahoru".to_string();
+    } else if smer == "doleva" {
+        *smer = "doprava".to_string();
+    } else if smer == "doprava" {
+        *smer = "doleva".to_string();
+    }
+    return smer.to_string();
 }
 
 fn krizovatka(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, mapa: &mut Vec<Vec<i32>>, mut room: i32) {
@@ -97,9 +102,10 @@ fn krizovatka(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String,
         for i in &mut *mapa {
             println!(" ");
             for j in i {
-                print!("{}", j);
+                print!("{} ", j);
             }
         }
+        println!(" ");
         println!("x: {}", x);
         println!("y: {}", y);
         let mut odpoved = txt_vstup("Kterým směrem půjdeš?").trim().to_string();
@@ -130,8 +136,7 @@ fn krizovatka(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String,
             zatacka(smer, &mut odpoved);
             return;
 
-        }
-         else {
+        } else {
             println!("Promiň, nerozuměl jsem")
         }
     }
@@ -143,9 +148,10 @@ fn zed(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, mapa: 
         for i in &mut *mapa {
             println!(" ");
             for j in i {
-                print!("{}", j);
+                print!("{} ", j);
             }
         }
+        println!(" ");
         println!("x: {}", x);
         println!("y: {}", y);
         let odpoved = txt_vstup("Půjdeš zpět?").trim().to_string();
@@ -154,15 +160,6 @@ fn zed(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut String, mapa: 
 
             prace_s_vektorem(list, &mut x, &mut y, smer, mapa, room, 2);
             opacny_smer(smer);
-            if smer == "nahoru" {
-                *y -= 1;
-            } else if smer == "dolů" {
-                *y += 1;
-            } else if smer == "doprava" {
-                *x += 1;
-            } else if smer == "doleva" {
-                *x -= 1;
-            }
             return;
 
         } else {
@@ -277,4 +274,36 @@ fn prace_s_vektorem(list: &[&str], mut x: &mut i32, mut y: &mut i32,smer: &mut S
             }
         }
     }  
+}
+
+fn vyber_mistnosti(mapa: &mut Vec<Vec<i32>>, smer: &str, cislo: &mut i32, y: i32, x: i32) -> i32 {
+    if smer == "nahoru" && y > 0 {
+        let hodnota = mapa[(y - 1) as usize][x as usize];
+        if hodnota != 0 {
+            *cislo = hodnota - 1;
+        }
+    }
+
+    if smer == "dolů" && y < (mapa.len() - 1) as i32 {
+        let hodnota = mapa[(y + 1) as usize][x as usize];
+        if hodnota != 0 {
+            *cislo = hodnota - 1;
+        }
+    }
+
+    if smer == "doleva" && x > 0 {
+        let hodnota = mapa[y as usize][(x - 1) as usize];
+        if hodnota != 0 {
+            *cislo = hodnota - 1;
+        }
+    }
+
+    if smer == "doprava" && x < (mapa[0].len() - 1) as i32 {
+        let hodnota = mapa[y as usize][(x + 1) as usize];
+        if hodnota != 0 {
+            *cislo = hodnota - 1;
+        }
+    }
+
+    *cislo
 }
